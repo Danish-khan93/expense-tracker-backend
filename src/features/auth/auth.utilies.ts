@@ -16,8 +16,14 @@ export const compareHashPass = async (
   return isMatch;
 };
 
-export const generateToken = (payload: object, secret: jwt.Secret) => {
-  const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+export const generateToken = (
+  payload: object,
+  secret: jwt.Secret,
+  expires: jwt.SignOptions["expiresIn"],
+) => {
+  const token = jwt.sign(payload, secret, {
+    expiresIn: expires ? expires : "15m",
+  });
   return token;
 };
 

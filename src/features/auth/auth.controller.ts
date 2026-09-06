@@ -1,13 +1,43 @@
 import { type Request, type Response } from "express";
 import type { ReqDataType } from "./auth.types.ts";
+import { registerUserService } from "./auth.service.ts";
+import { GlobalResponse } from "../../utilities/GlobalResponse.ts";
 // register
-export const registerUser = (req: Request, res: Response) => {
-  const data = req.body as ReqDataType;
-  console.log("data is valid");
+export const registerUser = async (req: Request, res: Response) => {
+  try {
+    const data = req.body as ReqDataType;
+    const finalData = await registerUserService(data);
+    console.log(finalData);
+    const resData = finalData && {
+      fullName: finalData?.createUser?.fullName,
+      email: finalData?.createUser?.email,
+      accessToken: finalData?.accessToken,
+      refreshToken: finalData?.refreshToken,
+    };
 
-  // 1- check user already exist in database
-  // 2- if not exist then create new user in database
-  // 3- password hashing
+    return res
+      .status(200)
+      .json(
+        new GlobalResponse(
+          "success",
+          200,
+          resData,
+          "User registered successfully",
+        ),
+      );
+  } catch (error) {
+    console.log("Error in registerUser:", error);
+    return res
+      .status(500)
+      .json(
+        new GlobalResponse(
+          "failed",
+          500,
+          (error as Error).message,
+          "Internal server error",
+        ),
+      );
+  }
 };
 
 // // login

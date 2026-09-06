@@ -11,6 +11,7 @@
   "author": "danish",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -24,6 +25,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.4.0",
     "nodemon": "^3.1.14",
+    "prisma": "^6.19.3",
     "tsx": "^4.23.13"
   }
 }

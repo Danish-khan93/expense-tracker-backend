@@ -1,4 +1,5 @@
 import { prisma } from "../../db.ts";
+import { ApiError } from "../../utilities/customError.ts";
 import { GlobalResponse } from "../../utilities/GlobalResponse.ts";
 import type { ReqDataType } from "./auth.types.ts";
 import { passwordHash, generateToken } from "./auth.utilies.ts";
@@ -13,47 +14,72 @@ export const registerUserService = async (data: ReqDataType) => {
         email: data.email,
       },
     });
-    console.log("checkUserAlreadyExist", checkUserAlreadyExist);
 
-    if (!checkUserAlreadyExist) {
-      // hashing password
-
-      const hashedPassword = await passwordHash(data.password);
-      console.log(hashedPassword);
-
-      // generate access token and refresh token
-
-      const accessToken = generateToken(
-        { ...data, password: hashedPassword },
-        process.env.ACCESS_TOKEN_SECRET as string,
-        "15m",
-      );
-      const refreshToken = generateToken(
-        { ...data, password: hashedPassword },
-        process.env.REFRESH_TOKEN_SECRET as string,
-        "7d",
-      );
-
-      const createUser = await prisma.user.create({
-        data: {
-          fullName: data.fullName,
-          email: data.email,
-          password: hashedPassword,
-          refreshToken: refreshToken,
-        },
-      });
-
-      if (!createUser) {
-        console.log(createUser);
-        return "User not created";
-      }
-
-      return { createUser, accessToken };
+    if (checkUserAlreadyExist) {
+      throw new ApiError(409, "User already exist with this email");
     }
-    return "User already exist";
-  } catch (error: Error | any) {
-    console.log("Error in registerUserService:", error);
-    throw new Error(error);
+    // hashing password
+
+    const hashedPassword = await passwordHash(data.password);
+    // create user
+
+    const createUser = await prisma.user.create({
+      data: {
+        fullName: data.fullName,
+        email: data.email,
+        password: hashedPassword,
+      },
+    });
+
+    if (!createUser) {
+      throw new ApiError(500, "Error while creating user");
+    }
+
+    // generate access token and refresh token
+
+    const accessToken = generateToken(
+      {
+        fullName: createUser.fullName,
+        email: createUser.email,
+        id: createUser.id,
+      },
+      "ACCESS_TOKEN_SECRET",
+      "15m",
+    );
+    const refreshToken = generateToken(
+      {
+        fullName: createUser.fullName,
+        email: createUser.email,
+        id: createUser.id,
+      },
+      "REFRESH_TOKEN_SECRET",
+      "7d",
+    );
+
+    const updateUser = await prisma.user.update({
+      where: { id: createUser.id },
+      data: { refreshToken: refreshToken },
+    });
+
+    console.log(updateUser, "updateUser");
+    const successfullCreateUser = {
+      fullName: createUser.fullName,
+      email: createUser.email,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      createdAt: createUser.createdAt,
+      updatedAt: createUser.updatedAt,
+    };
+
+    return successfullCreateUser;
+  } catch (error) {
+    const err = error as ApiError;
+    console.log(err.message, "err.message");
+    throw new ApiError(
+      err.statusCode,
+      err.message || "Error while registering user",
+      [err.message],
+    );
   }
 
   // if not exist then create new user in database

@@ -1,37 +1,27 @@
 import type { NextFunction, Request, Response } from "express";
 import * as yup from "yup";
 import { GlobalResponse } from "../../utilities/GlobalResponse.ts";
+import { ApiError } from "../../utilities/customError.ts";
+import { registrationValidationSchema } from "./auth.schema.ts";
+import { ValidationError } from "yup";
 
-// schema
-
-const validation = yup.object().shape({
-  fullName: yup.string().required("Full name is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
-});
-
-export const registorUserValidation = async (
+export const registerUserValidation = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
     const data = req.body;
-    const validatedData = await validation.validate(data, {
+    const validatedData = await registrationValidationSchema.validate(data, {
       abortEarly: false, // Validate all fields and return all errors,
     });
-    // return validatedData;
+    req.validatedData = validatedData; // Store the validated data in the request object
     next();
   } catch (err) {
-    const ValidationError = err as yup.ValidationError;
-    return res
-      .status(400)
-      .json(
-        new GlobalResponse(
-          "error",
-          400,
-          ValidationError.errors,
-          ValidationError?.message || "Validation error",
-        ),
-      );
+    console.log(err);
+
+    const validationError = err as yup.ValidationError;
+    console.log(validationError?.message);
+    throw new ApiError(400, "Validation error", validationError?.errors || []);
   }
 };

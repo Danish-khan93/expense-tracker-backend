@@ -1,10 +1,13 @@
 import { compare, hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import { ApiError } from "../../utilities/customError.ts";
+import dotenv from "dotenv";
+dotenv.config();
 // pass hash so save hash pass in database
 export const passwordHash = async (password: string) => {
   const hashPass = await hash(password, 10);
   return hashPass;
+
 };
 
 // pass hash so save hash pass in database
@@ -18,10 +21,10 @@ export const compareHashPass = async (
 
 export const generateToken = (
   payload: object,
-  secret: jwt.Secret,
+  secret: string,
   expires: jwt.SignOptions["expiresIn"],
 ) => {
-  const token = jwt.sign(payload, secret, {
+  const token = jwt.sign(payload, process.env[secret] as jwt.Secret, {
     expiresIn: expires ? expires : "15m",
   });
   return token;

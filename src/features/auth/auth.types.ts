@@ -3,3 +3,6 @@ export type ReqDataType = {
   email: string;
   password: string;
 };
+
+
+export type LoginUser = Pick<ReqDataType, "email" | "password">;

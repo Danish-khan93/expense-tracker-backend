@@ -1,8 +1,12 @@
 import { prisma } from "../../db.ts";
 import { ApiError } from "../../utilities/customError.ts";
 import { GlobalResponse } from "../../utilities/GlobalResponse.ts";
-import type { ReqDataType } from "./auth.types.ts";
-import { passwordHash, generateToken } from "./auth.utilies.ts";
+import type { LoginUser, ReqDataType } from "./auth.types.ts";
+import {
+  passwordHash,
+  generateToken,
+  compareHashPass,
+} from "./auth.utilies.ts";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -81,7 +85,66 @@ export const registerUserService = async (data: ReqDataType) => {
       [err.message],
     );
   }
+};
 
-  // if not exist then create new user in database
-  // hash pass and tokens
+export const LoginUserSerivce = async (data: LoginUser) => {
+  // check user in database through email if not throw error
+
+  const checkUser = await prisma.user.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
+
+  console.log(checkUser, "checkUser");
+
+  if (!checkUser) {
+    throw new ApiError(404, "Wrong Email and password");
+  }
+
+  const comparePass = await compareHashPass(data.password, checkUser?.password);
+
+  if (!comparePass) {
+    throw new ApiError(404, "Wrong password");
+  }
+
+  // tokens generate and if
+
+  // generate access token and refresh token
+
+  const accessToken = generateToken(
+    {
+      fullName: checkUser.fullName,
+      email: checkUser.email,
+      id: checkUser.id,
+    },
+    "ACCESS_TOKEN_SECRET",
+    "15m",
+  );
+  const refreshToken = generateToken(
+    {
+      fullName: checkUser.fullName,
+      email: checkUser.email,
+      id: checkUser.id,
+    },
+    "REFRESH_TOKEN_SECRET",
+    "7d",
+  );
+
+  // update token in login time
+
+  const updateUserData = await prisma.user.update({
+    where: {
+      id: checkUser.id,
+    },
+    data: {
+      refreshToken,
+    },
+  });
+
+  if (!updateUserData) {
+    throw new ApiError(500, "Server faild");
+  }
+
+  return {...updateUserData,accessToken}
 };

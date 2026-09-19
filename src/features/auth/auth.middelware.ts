@@ -2,7 +2,10 @@ import type { NextFunction, Request, Response } from "express";
 import * as yup from "yup";
 import { GlobalResponse } from "../../utilities/GlobalResponse.ts";
 import { ApiError } from "../../utilities/customError.ts";
-import { registrationValidationSchema } from "./auth.schema.ts";
+import {
+  loginValidationSchema,
+  registrationValidationSchema,
+} from "./auth.schema.ts";
 import { ValidationError } from "yup";
 
 export const registerUserValidation = async (
@@ -25,3 +28,28 @@ export const registerUserValidation = async (
     throw new ApiError(400, "Validation error", validationError?.errors || []);
   }
 };
+
+export const loginUserValidation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const loginValidation = await loginValidationSchema.validate(req.body);
+
+    req.validatedData = loginValidation;
+    next();
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      throw new ApiError(400, "Validation error", err.errors);
+    }
+  }
+};
+
+// // auth meddileware for all api like auth gaurd
+
+// export const authGaurd = (req:Request,res:Response,next:NextFunction)=>{
+
+// const accessToken  =
+
+// }

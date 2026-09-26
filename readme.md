@@ -9,6 +9,12 @@ Backend API for the Expense Tracker application.
 - TypeScript
 - REST API
 
+## other libs 
+ <!-- for validation the request body -->
+- yup
+
+
+
 ## Project Structure
 
 ```text

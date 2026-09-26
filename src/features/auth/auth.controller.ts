@@ -68,7 +68,7 @@ export const loginUser = async (req: Request, res: Response) => {
         "success",
         200,
         userDetail,
-        "User registered successfully",
+        "User Login successfully",
       ),
     );
 };

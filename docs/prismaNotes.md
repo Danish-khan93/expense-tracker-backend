@@ -74,3 +74,118 @@ refreshToken String
 | `generate`       | Generate Prisma Client | ❌          |
 | `migrate dev`    | Create/apply migration | ✅          |
 | `db push`        | Push schema to DB      | ✅          |
+
+
+
+
+# Prisma Enum
+
+## What is an Enum?
+
+An enum defines a **fixed set of allowed values**.
+
+In this example:
+
+```prisma
+enum Type {
+  Expense
+  Income
+}
+```
+
+The `Type` enum allows only:
+
+* `Expense`
+* `Income`
+
+## Using the Enum in a Model
+
+```prisma
+type Type @default(Expense)
+```
+
+This means:
+
+```text
+type field
+   ↓
+must use Type enum
+   ↓
+Expense OR Income
+```
+
+If no `type` is provided when creating a category, Prisma automatically uses:
+
+```text
+Expense
+```
+
+because of:
+
+```prisma
+@default(Expense)
+```
+
+## Example
+
+Valid:
+
+```text
+type = Expense
+```
+
+Valid:
+
+```text
+type = Income
+```
+
+Invalid:
+
+```text
+type = Salary
+```
+
+because `Salary` is not defined in the `Type` enum.
+
+## Why Use Enum?
+
+Enums provide **controlled and predictable values**.
+
+Without an enum, different values could accidentally be stored:
+
+```text
+expense
+Expense
+EXPENSE
+expenses
+```
+
+With an enum:
+
+```text
+Expense
+Income
+```
+
+only the defined values are allowed.
+
+## In Your Expense App
+
+Your category can represent two types:
+
+```text
+Category
+   │
+   ├── Expense
+   │     ├── Food
+   │     ├── Electricity
+   │     └── Transport
+   │
+   └── Income
+         ├── Salary
+         ├── Freelance
+         └── Rental
+```
+
+So `Type` tells your application whether a category belongs to **income or expense**.

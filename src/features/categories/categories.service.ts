@@ -1,6 +1,6 @@
 import { prisma } from "../../db.ts";
 import { ApiError } from "../../utilities/customError.ts";
-import type { CategoryCreate } from "./categories.type.ts";
+import type { CategoryCreate, CategoryUpdate } from "./categories.type.ts";
 
 export const categoryCreateSerive = async (data: CategoryCreate) => {
   try {
@@ -40,4 +40,21 @@ export const categoryCreateSerive = async (data: CategoryCreate) => {
   } catch (error) {
     throw new ApiError(500, "Category Creation Failed");
   }
+};
+
+export const categoryUpdatedSerivce = async (data: CategoryUpdate) => {
+  const findTheCategory = await prisma.category.findUnique({
+    where: {
+      id: data?.id,
+    },
+  });
+  console.log(findTheCategory);
+  if (!findTheCategory) {
+    throw new ApiError(404, "category not find");
+  }
+
+const newUpdatedCategoryData = {
+    
+}
+
 };

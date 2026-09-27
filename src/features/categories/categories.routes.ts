@@ -4,8 +4,7 @@ import { createCategory } from "./categories.controller.ts";
 
 const categoriesRoutes = express.Router();
 
-categoriesRoutes.get("/categories/getAllCategories");
-categoriesRoutes.post("/categories/create", categoryValidateMiddleware,createCategory);
-categoriesRoutes.put("/categories/update");
+// create cateogry route
+categoriesRoutes.post("/create", categoryValidateMiddleware, createCategory);
 
 export { categoriesRoutes };

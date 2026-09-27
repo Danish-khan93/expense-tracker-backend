@@ -18,8 +18,26 @@ export const categoryCreateSerive = async (data: CategoryCreate) => {
       );
     }
 
-// 
+    // create category
+    const categoryData = {
+      categoryName: data?.categoryName,
+      description: data.description ?? null,
+      icon: data.icon ?? null,
+      color: data?.color ?? null,
+      type: data?.categoryType,
+    };
+    const createNewCategory = await prisma.category?.create({
+      data: {
+        ...categoryData,
+      },
+    });
+    console.log(createNewCategory);
 
-
-  } catch (error) {}
+    if (!createNewCategory) {
+      throw new ApiError(500, "Create Category fail");
+    }
+    return createNewCategory;
+  } catch (error) {
+    throw new ApiError(500, "Category Creation Failed");
+  }
 };

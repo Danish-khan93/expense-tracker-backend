@@ -4,7 +4,7 @@ import type { CategoryCreate } from "./categories.type.ts";
 import { ApiError } from "../../utilities/customError.ts";
 import { ValidationError } from "yup";
 
-export const categoryValidateMiddleware = (
+export const categoryValidateMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -14,12 +14,15 @@ export const categoryValidateMiddleware = (
 
   try {
     // validation
-    const validateCategory = categorySchema.validate(
+    const validateCategory = await categorySchema.validate(
       { categoryName },
       {
         abortEarly: true,
       },
     );
+
+     req.validatedData = {...validateCategory,icon, color, description};
+
     next();
   } catch (error) {
     if (error instanceof ValidationError) {

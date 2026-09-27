@@ -6,17 +6,23 @@ import { categoryCreateSerive } from "./categories.service.ts";
 export const createCategory = async (req: Request, res: Response) => {
   // create category service
 
-  const CreatedCategory = req.validatedData as CategoryCreate;
+  const createdCategory = req.validatedData as CategoryCreate;
 
-  const categoryCreate = categoryCreateSerive(CreatedCategory);
+
+  const categoryCreate = await categoryCreateSerive(createdCategory);
 
   console.log(categoryCreate);
 
-  const data = {};
+  
 
   return res
     .status(200)
     .json(
-      new GlobalResponse("success", 200, data, "Category Create Successfully"),
+      new GlobalResponse(
+        "success",
+        200,
+        categoryCreate,
+        "Category Create Successfully",
+      ),
     );
 };

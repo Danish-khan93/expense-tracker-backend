@@ -9,19 +9,25 @@ export const categoryValidateMiddleware = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { categoryName, icon, color, description } =
-    req?.body as CategoryCreate;
+  const {
+    categoryName,
+    icon,
+    color,
+    description,
+    categoryType,
+    categoryTypeId,
+  } = req?.body as CategoryCreate;
 
   try {
     // validation
     const validateCategory = await categorySchema.validate(
-      { categoryName },
+      { categoryName, categoryType, categoryTypeId },
       {
         abortEarly: true,
       },
     );
 
-     req.validatedData = {...validateCategory,icon, color, description};
+    req.validatedData = { ...validateCategory, icon, color, description };
 
     next();
   } catch (error) {

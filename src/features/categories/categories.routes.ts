@@ -6,6 +6,7 @@ import {
 import {
   createCategory,
   getCategoryById,
+  getCateogryByType,
   updateCategory,
 } from "./categories.controller.ts";
 import { getCategoryByIdService } from "./categories.service.ts";
@@ -28,7 +29,7 @@ categoriesRoutes.get("/categoryById/:id", getCategoryById);
 
 //get all category by qurey expense and income
 
-categoriesRoutes.get("/getAllCategoryByType")
+categoriesRoutes.get("/getAllCategoryByType",getCateogryByType)
 
 
 

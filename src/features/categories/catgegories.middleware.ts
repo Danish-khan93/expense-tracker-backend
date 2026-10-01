@@ -1,6 +1,6 @@
 import { type NextFunction, type Request, type Response } from "express";
-import { categorySchema } from "./categories.schema.ts";
-import type { CategoryCreate } from "./categories.type.ts";
+import { categorySchema, categoryUpdateSchema } from "./categories.schema.ts";
+import type { CategoryCreate, CategoryResponse } from "./categories.type.ts";
 import { ApiError } from "../../utilities/customError.ts";
 import { ValidationError } from "yup";
 
@@ -28,6 +28,33 @@ export const categoryValidateMiddleware = async (
     );
 
     req.validatedData = { ...validateCategory, icon, color, description };
+
+    next();
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw new ApiError(400, "Validation error", error.errors);
+    }
+  }
+};
+
+// update category validation
+export const categoryValidateUpdateMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const data = req?.body as CategoryResponse;
+
+  try {
+    // validation
+    const validateCategory = await categoryUpdateSchema.validate(
+      { ...data },
+      {
+        abortEarly: true,
+      },
+    );
+
+    req.validatedData = validateCategory;
 
     next();
   } catch (error) {

@@ -78,9 +78,24 @@ export const updateCategory = async (req: Request, res: Response) => {
 // get cateogry by type
 
 export const getCateogryByType = async (req: Request, res: Response) => {
-  const { type } = req?.query?.type;
+  const { type } = req?.query;
+  console.log(typeof type, type, "test");
 
-  const getByType = await getCategoryByTypeSerivce(type);
+  if (type !== "Expense" && type !== "Income") {
+    throw new ApiError(400, "wrong Category Type");
+  } else {
+    const getByType = await getCategoryByTypeSerivce(type);
+    console.log(getByType);
 
-  console.log(getByType);
+    res
+      .status(200)
+      .json(
+        new GlobalResponse(
+          "Success",
+          200,
+          getByType,
+          "Category by type Successfully get",
+        ),
+      );
+  }
 };

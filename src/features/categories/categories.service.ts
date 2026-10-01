@@ -81,12 +81,11 @@ export const getCategoryByIdService = async (id: number) => {
 
 // get by category type service
 
-export const getCategoryByTypeSerivce = async (type) => {
+export const getCategoryByTypeSerivce = async (type: "Expense" | "Income") => {
   const findCategoryByType = await prisma.category.findMany({
     where: {
       type,
     },
   });
-  console.log(type);
-  console.log(findCategoryByType);
+  return findCategoryByType;
 };

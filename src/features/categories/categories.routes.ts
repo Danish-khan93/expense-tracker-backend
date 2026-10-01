@@ -1,6 +1,14 @@
 import express from "express";
-import { categoryValidateMiddleware } from "./catgegories.middleware.ts";
-import { createCategory, updateCategory } from "./categories.controller.ts";
+import {
+  categoryValidateMiddleware,
+  categoryValidateUpdateMiddleware,
+} from "./catgegories.middleware.ts";
+import {
+  createCategory,
+  getCategoryById,
+  updateCategory,
+} from "./categories.controller.ts";
+import { getCategoryByIdService } from "./categories.service.ts";
 
 const categoriesRoutes = express.Router();
 
@@ -8,8 +16,23 @@ const categoriesRoutes = express.Router();
 categoriesRoutes.post("/create", categoryValidateMiddleware, createCategory);
 // update category api
 categoriesRoutes.patch(
-  "/update/:id",
-  categoryValidateMiddleware,
+  "/updateCateogryById/:id",
+  categoryValidateUpdateMiddleware,
   updateCategory,
 );
+
+// get by id category
+
+categoriesRoutes.get("/categoryById/:id", getCategoryById);
+
+
+//get all category by qurey expense and income
+
+categoriesRoutes.get("/getAllCategoryByType")
+
+
+
+
+
+
 export { categoriesRoutes };

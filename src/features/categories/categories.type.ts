@@ -7,14 +7,23 @@ export type CategoryCreate = {
   description?: string;
 };
 
-
+export type CategoryResponse = {
+  id: number;
+  type: "Expense" | "Income";
+  categoryName: string;
+  icon: string;
+  color: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+};
 export type CategoryUpdate = {
-       id: number,
-        type: "Expense" | "Income",
-        categoryName:string,
-        icon: string,
-        color: string,
-        description: string,
-        createdAt: string,
-        updatedAt: string
-}
+
+    type?: "Expense" | "Income";
+  categoryName?: string;
+  icon?: string;
+  color?: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+};

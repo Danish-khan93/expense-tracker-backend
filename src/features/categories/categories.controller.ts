@@ -4,7 +4,10 @@ import type { CategoryCreate, CategoryUpdate } from "./categories.type.ts";
 import {
   categoryCreateSerive,
   categoryUpdatedSerivce,
+  getCategoryByIdService,
+  getCategoryByTypeSerivce,
 } from "./categories.service.ts";
+import { ApiError } from "../../utilities/customError.ts";
 
 export const createCategory = async (req: Request, res: Response) => {
   // create category service
@@ -27,10 +30,38 @@ export const createCategory = async (req: Request, res: Response) => {
     );
 };
 
-export const updateCategory = (req: Request, res: Response) => {
-  const data = req.validatedData as CategoryUpdate;
+export const getCategoryById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  console.log(id, "controller1");
 
-  const updatedCategory = categoryUpdatedSerivce(data);
+  // service call to get category
+  if (!id) {
+    throw new ApiError(404, "category Not found");
+  }
+  const getCategory = await getCategoryByIdService(+id);
+
+  console.log(getCategory, "controller2");
+  return res
+    .status(200)
+    .json(
+      new GlobalResponse(
+        "Success",
+        200,
+        getCategory,
+        "get Category Successfully",
+      ),
+    );
+};
+
+export const updateCategory = async (req: Request, res: Response) => {
+  const data = req.validatedData as CategoryUpdate;
+  const { id } = req?.params;
+
+  if (!id) {
+    throw new ApiError(404, "Category Not Found");
+  }
+  const updatedCategory = await categoryUpdatedSerivce(+id, data);
+  console.log(updatedCategory, "controller");
 
   return res
     .status(200)
@@ -42,4 +73,14 @@ export const updateCategory = (req: Request, res: Response) => {
         "Category Create Successfully",
       ),
     );
+};
+
+// get cateogry by type
+
+export const getCateogryByType = async (req: Request, res: Response) => {
+  const { type } = req?.query?.type;
+
+  const getByType = await getCategoryByTypeSerivce(type);
+
+  console.log(getByType);
 };

@@ -42,19 +42,51 @@ export const categoryCreateSerive = async (data: CategoryCreate) => {
   }
 };
 
-export const categoryUpdatedSerivce = async (data: CategoryUpdate) => {
+export const categoryUpdatedSerivce = async (
+  id: number,
+  data: CategoryUpdate,
+) => {
+  //find data with qurey id
   const findTheCategory = await prisma.category.findUnique({
     where: {
-      id: data?.id,
+      id: id,
     },
   });
-  console.log(findTheCategory);
+
   if (!findTheCategory) {
     throw new ApiError(404, "category not find");
   }
 
-const newUpdatedCategoryData = {
-    
-}
+  const newUpdatedCategoryData = await prisma.category.update({
+    where: { id: id },
+    data: data,
+  });
+  console.log(newUpdatedCategoryData, "service");
+  return newUpdatedCategoryData;
+};
 
+export const getCategoryByIdService = async (id: number) => {
+  const findCategoryById = await prisma.category.findUnique({
+    where: {
+      id,
+    },
+  });
+  console.log(findCategoryById, "findCategoryById");
+  if (!findCategoryById) {
+    throw new ApiError(404, "The cateogry not found");
+  }
+
+  return findCategoryById;
+};
+
+// get by category type service
+
+export const getCategoryByTypeSerivce = async (type) => {
+  const findCategoryByType = await prisma.category.findMany({
+    where: {
+      type,
+    },
+  });
+  console.log(type);
+  console.log(findCategoryByType);
 };

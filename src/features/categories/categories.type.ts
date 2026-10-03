@@ -5,6 +5,7 @@ export type CategoryCreate = {
   icon?: string;
   color?: string;
   description?: string;
+  userId: number;
 };
 
 export type CategoryResponse = {
@@ -18,8 +19,7 @@ export type CategoryResponse = {
   updatedAt: string;
 };
 export type CategoryUpdate = {
-
-    type?: "Expense" | "Income";
+  type?: "Expense" | "Income";
   categoryName?: string;
   icon?: string;
   color?: string;

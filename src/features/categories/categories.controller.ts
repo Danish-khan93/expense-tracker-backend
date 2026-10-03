@@ -13,6 +13,7 @@ export const createCategory = async (req: Request, res: Response) => {
   // create category service
 
   const createdCategory = req.validatedData as CategoryCreate;
+  
 
   const categoryCreate = await categoryCreateSerive(createdCategory);
 
@@ -79,7 +80,6 @@ export const updateCategory = async (req: Request, res: Response) => {
 
 export const getCateogryByType = async (req: Request, res: Response) => {
   const { type } = req?.query;
-  console.log(typeof type, type, "test");
 
   if (type !== "Expense" && type !== "Income") {
     throw new ApiError(400, "wrong Category Type");

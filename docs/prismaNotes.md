@@ -189,3 +189,8 @@ Category
 ```
 
 So `Type` tells your application whether a category belongs to **income or expense**.
+
+
+# @@unique([userId, categoryName])
+ means the same user cannot have two categories with the same name, but different users can have the same category name.
+ # The same user cannot have two categories with the same name.

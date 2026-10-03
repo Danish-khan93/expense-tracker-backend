@@ -16,6 +16,7 @@ export const categoryValidateMiddleware = async (
     description,
     categoryType,
     categoryTypeId,
+    userId,
   } = req?.body as CategoryCreate;
 
   try {
@@ -27,7 +28,13 @@ export const categoryValidateMiddleware = async (
       },
     );
 
-    req.validatedData = { ...validateCategory, icon, color, description };
+    req.validatedData = {
+      ...validateCategory,
+      icon,
+      color,
+      description,
+      userId,
+    };
 
     next();
   } catch (error) {

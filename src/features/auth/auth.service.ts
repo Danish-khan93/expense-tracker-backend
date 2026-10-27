@@ -65,8 +65,9 @@ export const registerUserService = async (data: ReqDataType) => {
       data: { refreshToken: refreshToken },
     });
 
-    console.log(updateUser, "updateUser");
+    // console.log(updateUser, "updateUser");
     const successfullCreateUser = {
+      id: createUser.id,
       fullName: createUser.fullName,
       email: createUser.email,
       accessToken: accessToken,
@@ -78,7 +79,7 @@ export const registerUserService = async (data: ReqDataType) => {
     return successfullCreateUser;
   } catch (error) {
     const err = error as ApiError;
-    console.log(err.message, "err.message");
+    // console.log(err.message, "err.message");
     throw new ApiError(
       err.statusCode,
       err.message || "Error while registering user",
@@ -96,7 +97,7 @@ export const LoginUserSerivce = async (data: LoginUser) => {
     },
   });
 
-  console.log(checkUser, "checkUser");
+  // console.log(checkUser, "checkUser");
 
   if (!checkUser) {
     throw new ApiError(404, "Wrong Email and password");
@@ -146,5 +147,5 @@ export const LoginUserSerivce = async (data: LoginUser) => {
     throw new ApiError(500, "Server faild");
   }
 
-  return {...updateUserData,accessToken}
+  return { ...updateUserData, accessToken };
 };

@@ -13,9 +13,15 @@ export const createCategory = async (req: Request, res: Response) => {
   // create category service
 
   const createdCategory = req.validatedData as CategoryCreate;
-  
+  const userId = req?.userId;
+  const finalData = {
+    ...createdCategory,
+    userId,
+  };
+  // console.log(finalData);
+  // console.log(createdCategory);
 
-  const categoryCreate = await categoryCreateSerive(createdCategory);
+  const categoryCreate = await categoryCreateSerive(finalData);
 
   console.log(categoryCreate);
 
@@ -33,7 +39,7 @@ export const createCategory = async (req: Request, res: Response) => {
 
 export const getCategoryById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log(id, "controller1");
+  // console.log(id, "controller1");
 
   // service call to get category
   if (!id) {
@@ -41,7 +47,7 @@ export const getCategoryById = async (req: Request, res: Response) => {
   }
   const getCategory = await getCategoryByIdService(+id);
 
-  console.log(getCategory, "controller2");
+  // console.log(getCategory, "controller2");
   return res
     .status(200)
     .json(
@@ -62,7 +68,7 @@ export const updateCategory = async (req: Request, res: Response) => {
     throw new ApiError(404, "Category Not Found");
   }
   const updatedCategory = await categoryUpdatedSerivce(+id, data);
-  console.log(updatedCategory, "controller");
+  // console.log(updatedCategory, "controller");
 
   return res
     .status(200)
@@ -80,12 +86,13 @@ export const updateCategory = async (req: Request, res: Response) => {
 
 export const getCateogryByType = async (req: Request, res: Response) => {
   const { type } = req?.query;
+  const userId = req?.userId;
 
   if (type !== "Expense" && type !== "Income") {
     throw new ApiError(400, "wrong Category Type");
   } else {
-    const getByType = await getCategoryByTypeSerivce(type);
-    console.log(getByType);
+    const getByType = await getCategoryByTypeSerivce(type, userId);
+    // console.log(getByType);
 
     res
       .status(200)

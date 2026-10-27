@@ -18,6 +18,7 @@ export const categoryValidateMiddleware = async (
     categoryTypeId,
     userId,
   } = req?.body as CategoryCreate;
+  console.log(userId);
 
   try {
     // validation

@@ -21,10 +21,10 @@ export const registerUserValidation = async (
     req.validatedData = validatedData; // Store the validated data in the request object
     next();
   } catch (err) {
-    console.log(err);
+    // console.log(err);
 
     const validationError = err as yup.ValidationError;
-    console.log(validationError?.message);
+    // console.log(validationError?.message);
     throw new ApiError(400, "Validation error", validationError?.errors || []);
   }
 };

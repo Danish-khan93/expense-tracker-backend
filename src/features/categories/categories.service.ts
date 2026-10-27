@@ -3,7 +3,7 @@ import { ApiError } from "../../utilities/customError.ts";
 import type { CategoryCreate, CategoryUpdate } from "./categories.type.ts";
 
 export const categoryCreateSerive = async (data: CategoryCreate) => {
-  console.log(data);
+  // console.log(data, "findiduser");
 
   // check the cateogry already or not
   const checkCategory = await prisma.category.findUnique({
@@ -14,7 +14,7 @@ export const categoryCreateSerive = async (data: CategoryCreate) => {
       },
     },
   });
-  console.log(checkCategory);
+  // console.log(checkCategory);
 
   if (checkCategory) {
     throw new ApiError(
@@ -32,14 +32,14 @@ export const categoryCreateSerive = async (data: CategoryCreate) => {
     type: data?.categoryType,
     userId: data?.userId,
   };
-  console.log(categoryData, "categoryData");
+  // console.log(categoryData, "categoryData");
 
   const createNewCategory = await prisma.category?.create({
     data: {
       ...categoryData,
     },
   });
-  console.log(createNewCategory, "createNewCategorycreateNewCategory");
+  // console.log(createNewCategory, "createNewCategorycreateNewCategory");
 
   if (!createNewCategory) {
     throw new ApiError(500, "Create Category fail");
@@ -66,7 +66,7 @@ export const categoryUpdatedSerivce = async (
     where: { id: id },
     data: data,
   });
-  console.log(newUpdatedCategoryData, "service");
+  // console.log(newUpdatedCategoryData, "service");
   return newUpdatedCategoryData;
 };
 
@@ -76,7 +76,7 @@ export const getCategoryByIdService = async (id: number) => {
       id,
     },
   });
-  console.log(findCategoryById, "findCategoryById");
+  // console.log(findCategoryById, "findCategoryById");
   if (!findCategoryById) {
     throw new ApiError(404, "The cateogry not found");
   }
@@ -86,11 +86,18 @@ export const getCategoryByIdService = async (id: number) => {
 
 // get by category type service
 
-export const getCategoryByTypeSerivce = async (type: "Expense" | "Income") => {
+export const getCategoryByTypeSerivce = async (
+  type: "Expense" | "Income",
+  userId: number,
+) => {
+  // console.log(userId);
+
   const findCategoryByType = await prisma.category.findMany({
     where: {
       type,
+      userId,
     },
   });
+  // console.log(findCategoryByType);
   return findCategoryByType;
 };

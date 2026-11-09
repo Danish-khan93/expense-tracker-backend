@@ -35,9 +35,13 @@ enum Type {
 
 // enum for category
 enum PaymentType {
-  cash
-  card
-  online
+  Cash
+  BankTransfer
+  OnlinePayment
+  DebitCard
+  CreditCard
+  Cheque
+  DigitalWallet
 }
 
 model category {

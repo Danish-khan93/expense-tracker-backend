@@ -5,17 +5,22 @@ import {
   getByIdExpenseController,
   updateByIdExpenseController,
 } from "./expense.controllers.ts";
+import { expenseValidationMiddleware } from "./expense.middleware.ts";
 const expenseRoute = express.Router();
 
 // get all expense
-
-expenseRoute.get("getAllExpense", getAllExpenseController);
+expenseRoute.get("/getAllExpense", getAllExpenseController);
 
 // create expense
-expenseRoute.post("createExpense", createExpenseController);
+expenseRoute.post(
+  "/createExpense",
+  expenseValidationMiddleware,
+  createExpenseController,
+);
 // get expense by id
-expenseRoute.get("getExpenseById/:id", getByIdExpenseController);
+expenseRoute.get("/getExpenseById/:id", getByIdExpenseController);
+
 // update expense by id
-expenseRoute.patch("updateExpense/:id", updateByIdExpenseController);
+expenseRoute.patch("/updateExpense/:id", updateByIdExpenseController);
 
 export { expenseRoute };

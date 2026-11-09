@@ -18,9 +18,13 @@ export type Type = (typeof Type)[keyof typeof Type]
 
 
 export const PaymentType = {
-  cash: 'cash',
-  card: 'card',
-  online: 'online'
+  Cash: 'Cash',
+  BankTransfer: 'BankTransfer',
+  OnlinePayment: 'OnlinePayment',
+  DebitCard: 'DebitCard',
+  CreditCard: 'CreditCard',
+  Cheque: 'Cheque',
+  DigitalWallet: 'DigitalWallet'
 } as const
 
 export type PaymentType = (typeof PaymentType)[keyof typeof PaymentType]

@@ -15,7 +15,6 @@ export const expenseValidationMiddleware = async (
       abortEarly: false,
     });
 
-
     next();
   } catch (error) {
     const err = error as ValidationError;

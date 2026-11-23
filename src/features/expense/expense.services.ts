@@ -12,17 +12,19 @@ export const createExpenseService = async (
     title: data.title,
     categoryId: Number(data.expenseCategoryId),
     paymentType: data?.paymentMetodeName,
+    paymentMetodeId: Number(data?.paymentMetodeId),
     note: data.note ?? "",
-    dateOfPayment: data.date,
+    dateOfPayment: data.dateOfPayment,
+    statusId: Number(data.statusId),
+    status: data.statusName,
   };
 
   const findVaildCategoryByUser = await prisma.category.findUnique({
     where: {
       userId,
-      id: data.expenseCategoryId,
+      id: updateData.categoryId,
     },
   });
-  console.log(findVaildCategoryByUser, "findVaildCategoryByUser");
 
   if (!findVaildCategoryByUser) {
     throw new ApiError(404, "The Category Not Found");
@@ -34,24 +36,40 @@ export const createExpenseService = async (
   if (!createExpense) {
     throw new ApiError(500, "Expense creation failed");
   }
-  console.log(createExpense);
+
   return createExpense;
 };
 
 // get all expense by user id
 
 export const getAllExpenseService = async (id: number) => {
-  const getAllExpense = await prisma?.expense.findMany({
+  const getAllExpense = await prisma.expense.findMany({
     where: {
       userId: id,
+    },
+    include: {
+      category: {
+        select: {
+          categoryName: true,
+        },
+      },
     },
   });
   if (!getAllExpense) {
     throw new ApiError(404, "There is not expense In this User");
   }
 
-  return getAllExpense;
+  const allExpense = getAllExpense.map(({ category, ...val }) => {
+    return {
+      ...val,
+      categoryName: category?.categoryName,
+    };
+  });
+
+  return allExpense;
 };
+
+// get single expense
 
 export const getSingleExpenseService = async (userId: number, id: number) => {
   const getSingleExpense = await prisma?.expense.findUnique({
@@ -59,13 +77,30 @@ export const getSingleExpenseService = async (userId: number, id: number) => {
       userId,
       id,
     },
+    include: {
+      category: {
+        select: {
+          categoryName: true,
+        },
+      },
+    },
   });
-  console.log(getSingleExpense);
 
   if (!getSingleExpense) {
     throw new ApiError(404, "Expense Not Found");
   }
-  return getSingleExpense;
+
+  const { categoryId, category, status, paymentType, ...data } =
+    getSingleExpense;
+
+  const finalData = {
+    ...data,
+    expenseCategoryName: category?.categoryName,
+    expenseCategoryId: categoryId,
+    statusName: status,
+    paymentMetodeName: paymentType,
+  };
+  return finalData;
 };
 
 export const updateExpense = async (
@@ -100,12 +135,12 @@ export const updateExpense = async (
         note: data.note,
       }),
 
-      ...(data.date !== undefined && {
-        dateOfPayment: data.date,
+      ...(data.dateOfPayment !== undefined && {
+        dateOfPayment: data.dateOfPayment,
       }),
     },
   });
-  console.log(updatedExpense);
+
   if (!updateExpense) {
     throw new ApiError(500, "Expense can not Update Successfully");
   }

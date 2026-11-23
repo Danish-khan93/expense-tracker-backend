@@ -11,7 +11,6 @@ import { GlobalResponse } from "../../utilities/GlobalResponse.ts";
 // get All expense
 export const getAllExpenseController = async (req: Request, res: Response) => {
   const userId = req?.userId;
-  console.log(userId);
 
   const getAllExpense = await getAllExpenseService(userId);
 
@@ -36,7 +35,7 @@ export const createExpenseController = async (req: Request, res: Response) => {
     .status(200)
     .json(
       new GlobalResponse(
-        "Success",
+        "success",
         200,
         createExpense,
         "Expense Create Successfully",
@@ -47,10 +46,8 @@ export const createExpenseController = async (req: Request, res: Response) => {
 export const getByIdExpenseController = async (req: Request, res: Response) => {
   const userId = req?.userId;
   const { id } = req?.params;
-  console.log(id);
 
   const getSingleExpense = await getSingleExpenseService(userId, Number(id));
-  console.log(getSingleExpense);
 
   res
     .status(200)
@@ -73,7 +70,6 @@ export const updateByIdExpenseController = async (
   const data = req?.body;
 
   const updatedExpense = await updateExpense(userId, data, id);
-  console.log(updatedExpense);
 
   res
     .status(200)

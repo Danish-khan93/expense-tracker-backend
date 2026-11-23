@@ -28,3 +28,12 @@ export const PaymentType = {
 } as const
 
 export type PaymentType = (typeof PaymentType)[keyof typeof PaymentType]
+
+
+export const Status = {
+  Paid: 'Paid',
+  Pending: 'Pending',
+  Rejected: 'Rejected'
+} as const
+
+export type Status = (typeof Status)[keyof typeof Status]

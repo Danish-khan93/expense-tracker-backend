@@ -75,7 +75,7 @@ export const updateByIdExpenseController = async (
     .status(200)
     .json(
       new GlobalResponse(
-        "Success",
+        "success",
         200,
         updatedExpense,
         "Update Expense Successfully",

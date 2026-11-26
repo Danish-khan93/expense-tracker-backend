@@ -110,9 +110,12 @@ export const updateExpense = async (
 ) => {
   // find by id which expense is update
 
+  console.log(data);
+
   const updatedExpense = await prisma.expense.update({
     where: {
       id,
+      userId,
     },
     data: {
       ...(data.title !== undefined && {
@@ -120,15 +123,18 @@ export const updateExpense = async (
       }),
 
       ...(data.amount !== undefined && {
-        amount: data.amount,
+        amount: Number(data.amount),
       }),
 
       ...(data.expenseCategoryId !== undefined && {
-        categoryId: data.expenseCategoryId,
+        categoryId: Number(data.expenseCategoryId),
       }),
 
       ...(data.paymentMetodeName !== undefined && {
         paymentType: data.paymentMetodeName,
+      }),
+      ...(data.paymentMetodeId !== undefined && {
+        paymentMetodeId: Number(data.paymentMetodeId),
       }),
 
       ...(data.note !== undefined && {
@@ -138,8 +144,16 @@ export const updateExpense = async (
       ...(data.dateOfPayment !== undefined && {
         dateOfPayment: data.dateOfPayment,
       }),
+
+      ...(data.statusId !== undefined && {
+        statusId: Number(data.statusId),
+      }),
+      ...(data.statusName !== undefined && {
+        status: data.statusName,
+      }),
     },
   });
+  console.log(updateExpense);
 
   if (!updateExpense) {
     throw new ApiError(500, "Expense can not Update Successfully");
